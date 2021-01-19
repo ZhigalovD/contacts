@@ -1,15 +1,15 @@
 <template>
   <div class="create container">
     <div class="create__wrapper">
-      Add line information
+      <div class="create__title">Добавление информации контакта</div>
       <form @submit.prevent="submit">
-        <input type="text" placeholder="Enter the title" v-model="nameInformation">
-        <input type="text" placeholder="enter information" v-model="valueInformation">
+        <input type="text" placeholder="Введите название" v-model="nameInformation">
+        <input type="text" placeholder="Введите значение" v-model="valueInformation">
         <button class="create__wrapper--button" type="submit">+</button>
       </form>
     </div>
     <div class="create__information">
-      <line-information v-for="(info, i) in validInformation" :key="i" :info="info"/>
+      <line-information v-for="(info, i) in ADD_INFORMATION" :key="i" :info="info"/>
     </div>
   </div>
 </template>
@@ -25,16 +25,17 @@ export default {
   },
   data() {
     return {
+      idInformation: 0,
       nameInformation: '',
       valueInformation: ''
     };
   },
-  computed: mapGetters(["validInformation"]),
+  computed: mapGetters(["ADD_INFORMATION"]),
   methods: {
-    ...mapMutations(['createInformation']),
+    ...mapMutations(['CREATE_INFORMATION']),
     submit() {
-      this.createInformation({
-        id: this.validInformation.length,
+      this.CREATE_INFORMATION({
+        id: this.idInformation++,
         nameInformation: this.nameInformation,
         valueInformation: this.valueInformation
       });
@@ -79,6 +80,11 @@ export default {
 
   &__information {
     margin: 20px 0;
+  }
+
+  &__title {
+    font-size: @size-big;
+    margin-bottom: 10px;
   }
 }
 </style>

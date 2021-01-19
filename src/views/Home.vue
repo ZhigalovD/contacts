@@ -2,7 +2,7 @@
   <div class="home container">
     <div class="home__create">
       <router-link to="/create" class="home__create--button">+</router-link>
-      Create new contact
+      Создать новый контакт
     </div>
   </div>
 </template>

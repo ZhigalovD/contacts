@@ -16,17 +16,17 @@
         </g>
       </svg>
     </button>
+    <button @click="backValue">B</button>
     <div class="line-information__buttons">
-      <button @click="confirmation" v-if="!isDisabled">S</button>
-      <button v-if="!isDisabled">C</button>
-      <button v-if="!isDisabled">D</button>
-      <button v-if="!isDisabled">B</button>
+      <button @click="confirmationInformation" v-if="!isDisabled">S</button>
+      <button @click="cancelInformation" v-if="!isDisabled">C</button>
+      <button @click="deleteInformation" v-if="!isDisabled">D</button>
     </div>
   </div>
 </template>
 
 <script>
-import {mapMutations} from "vuex"
+import {mapGetters, mapMutations} from "vuex"
 
 export default {
   name: "LineInformation",
@@ -38,21 +38,39 @@ export default {
   },
   data() {
     return {
-      isDisabled: true
+      isDisabled: true,
+      initialName: '',
+      initialValue: ''
     }
   },
+  computed: mapGetters(["ADD_INFORMATION"]),
   methods: {
-    ...mapMutations(['createInformation', 'UPDATE_INFORMATION']),
-    confirmation() {
-      this.UPDATE_INFORMATION({
-        id: this.info.id,
-        nameInformation: this.info.nameInformation,
-        valueInformation: this.info.valueInformation
-      })
+    ...mapMutations(['SHOW_POPUP', 'SET_ARR', 'SET_NAME_EVENT']),
+    confirmationInformation() {
+      this.SET_NAME_EVENT({name: 'edit', text: 'редактировать'})
+      this.SHOW_POPUP(true)
+      this.SET_ARR(this.info)
+      this.isDisabled = true
+    },
+    deleteInformation() {
+      this.SET_NAME_EVENT({name: 'delete', text: 'удалить'})
+      this.SHOW_POPUP(true)
+      this.SET_ARR(this.info)
+      this.isDisabled = true
+    },
+    cancelInformation() {
+      this.info.nameInformation = this.initialName
+      this.info.valueInformation = this.initialValue
       this.isDisabled = true
     },
     unDisabled() {
+      this.initialName = this.info.nameInformation
+      this.initialValue = this.info.valueInformation
       this.isDisabled = false
+    },
+    backValue(){
+      this.info.nameInformation = this.initialName
+      this.info.valueInformation = this.initialValue
     }
   }
 }
