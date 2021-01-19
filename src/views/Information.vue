@@ -32,7 +32,7 @@ import {mapGetters, mapMutations} from "vuex"
 import LineInformation from "@/components/LineInformation";
 
 export default {
-  name: "Create",
+  name: "Information",
   components: {
     LineInformation
   },
