@@ -16,7 +16,7 @@
         </g>
       </svg>
     </button>
-    <button @click="backValue">B</button>
+    <button @click="backValue" :disabled="isDisabledBack">B</button>
     <div class="line-information__buttons">
       <button @click="confirmationInformation" v-if="!isDisabled">S</button>
       <button @click="cancelInformation" v-if="!isDisabled">C</button>
@@ -39,6 +39,7 @@ export default {
   data() {
     return {
       isDisabled: true,
+      isDisabledBack: true,
       initialName: '',
       initialValue: ''
     }
@@ -67,6 +68,7 @@ export default {
       this.initialName = this.info.nameInformation
       this.initialValue = this.info.valueInformation
       this.isDisabled = false
+      this.isDisabledBack = false
     },
     backValue(){
       this.info.nameInformation = this.initialName
