@@ -17,7 +17,7 @@
       </svg>
     </button>
     <div class="line-information__buttons">
-      <button @click="confirmation" v-if="!isDisabled">S</button>
+      <button @click="confirmation" v-if="!isDisabled">Sa</button>
       <button v-if="!isDisabled">C</button>
       <button v-if="!isDisabled">D</button>
       <button v-if="!isDisabled">B</button>
