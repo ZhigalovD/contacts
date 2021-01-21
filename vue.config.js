@@ -8,5 +8,8 @@ module.exports = {
     },
     devServer: {
         port: process.env.VUE_APP_LOCALHOST
-    }
+    },
+    publicPath: process.env.NODE_ENV === 'production'
+        ? '/contacts/'
+        : '/'
 };
