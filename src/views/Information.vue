@@ -55,6 +55,7 @@
 <script>
 import {mapGetters, mapMutations} from "vuex"
 import LineInformation from "@/components/LineInformation";
+import { uuid } from 'vue-uuid' // Import uuid
 
 export default {
   name: "Information",
@@ -95,7 +96,7 @@ export default {
     },
     setRequiredFields() {
       this.SET_REQUIRE_FIELDS({
-        id_user: this._uid,
+        id_user: uuid.v1(),
         name: this.name,
         phone: this.phone
       })

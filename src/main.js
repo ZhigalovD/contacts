@@ -3,7 +3,9 @@ import  store from './store'
 import App from './App.vue'
 import router from './router'
 import 'normalize.less'
+import UUID from 'vue-uuid'
 
+Vue.use(UUID);
 Vue.config.productionTip = false
 
 new Vue({
