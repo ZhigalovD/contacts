@@ -10,6 +10,7 @@
   "dependencies": {
     "core-js": "^3.6.5",
     "normalize.less": "^1.0.0",
+    "prettier": "^2.2.1",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
     "vue-uuid": "^2.0.2",
@@ -22,6 +23,8 @@
     "@vue/cli-service": "~4.5.0",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
+    "eslint-config-prettier": "^7.2.0",
+    "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-vue": "^6.2.2",
     "less": "^4.1.0",
     "less-loader": "^7.2.1",
@@ -33,17 +36,34 @@
       "node": true
     },
     "extends": [
+      "prettier",
       "plugin:vue/essential",
       "eslint:recommended"
     ],
     "parserOptions": {
       "parser": "babel-eslint"
     },
+    "plugins": [
+      "prettier"
+    ],
     "rules": {}
   },
   "browserslist": [
     "> 1%",
     "last 2 versions",
     "not dead"
-  ]
+  ],
+  "description": "## Project setup ``` npm install ```",
+  "main": "babel.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZhigalovD/contacts.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ZhigalovD/contacts/issues"
+  },
+  "homepage": "https://github.com/ZhigalovD/contacts#readme"
 }

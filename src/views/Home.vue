@@ -1,35 +1,44 @@
 <template>
   <div class="home container">
     <div class="home__create">
-      <router-link to="/information" @click.native="setId" class="home__create--button">+</router-link>
+      <router-link
+        to="/information"
+        @click.native="setId"
+        class="home__create--button"
+        >+</router-link
+      >
       Создать новый контакт
     </div>
     <div class="home__items">
-      <contact-item v-for="(contact, i) in GET_CONTACTS" :key="i" :contacts="contact"/>
+      <contact-item
+        v-for="(contact, i) in GET_CONTACTS"
+        :key="i"
+        :contacts="contact"
+      />
     </div>
   </div>
 </template>
 
 <script>
-import {mapGetters, mapMutations} from "vuex"
+import { mapGetters, mapMutations } from "vuex";
 import ContactItem from "@/components/ContactItem";
-import {uuid} from "vue-uuid";
+import { uuid } from "vue-uuid";
 
 export default {
-  name: 'Home',
+  name: "Home",
   components: {
-    ContactItem
+    ContactItem,
   },
-  computed: mapGetters(['GET_CONTACTS']),
+  computed: mapGetters(["GET_CONTACTS"]),
   methods: {
-    ...mapMutations(['SET_ID']),
+    ...mapMutations(["SET_ID"]),
     setId() {
       this.SET_ID({
-        id_user: uuid.v1()
-      })
-    }
-  }
-}
+        id_user: uuid.v1(),
+      });
+    },
+  },
+};
 </script>
 
 <style lang="less">

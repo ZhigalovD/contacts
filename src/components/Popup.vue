@@ -3,7 +3,7 @@
     <div class="popup__bg"></div>
     <div class="popup__wrapper">
       <div class="popup__title">
-        Вы точно хотите {{GET_NAME_EVENT.text}} это поле?
+        Вы точно хотите {{ GET_NAME_EVENT.text }} это поле?
       </div>
       <button @click="confirmation">Да</button>
       <button @click="notConfirm">Нет</button>
@@ -12,32 +12,32 @@
 </template>
 
 <script>
-import {mapMutations, mapGetters} from "vuex"
+import { mapMutations, mapGetters } from "vuex";
 
 export default {
   name: "Popup",
   computed: mapGetters(["GET_ARR", "GET_NAME_EVENT"]),
   methods: {
-    ...mapMutations(['UPDATE_INFORMATION', 'DELETE_INFORMATION', "SHOW_POPUP"]),
+    ...mapMutations(["UPDATE_INFORMATION", "DELETE_INFORMATION", "SHOW_POPUP"]),
     confirmation() {
-      if (this.GET_NAME_EVENT.name === 'edit') {
+      if (this.GET_NAME_EVENT.name === "edit") {
         this.UPDATE_INFORMATION({
           id: this.GET_ARR.id,
           nameInformation: this.GET_ARR.nameInformation,
-          valueInformation: this.GET_ARR.valueInformation
-        })
+          valueInformation: this.GET_ARR.valueInformation,
+        });
       } else {
         this.DELETE_INFORMATION({
-          id: this.GET_ARR.id
-        })
+          id: this.GET_ARR.id,
+        });
       }
-      this.SHOW_POPUP(false)
+      this.SHOW_POPUP(false);
     },
     notConfirm() {
-      this.SHOW_POPUP(false)
-    }
-  }
-}
+      this.SHOW_POPUP(false);
+    },
+  },
+};
 </script>
 
 <style lang="less">

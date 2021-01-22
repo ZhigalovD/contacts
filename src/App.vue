@@ -1,21 +1,21 @@
 <template>
   <div id="app">
     <Header />
-    <router-view/>
-    <popup v-if="IS_SHOW_POPUP"/>
+    <router-view />
+    <popup v-if="IS_SHOW_POPUP" />
   </div>
 </template>
 
 <script>
-import {mapGetters} from "vuex"
+import { mapGetters } from "vuex";
 import Header from "@/components/layout/Header";
 import Popup from "@/components/Popup";
 
-export default  {
+export default {
   components: {
     Header,
-    Popup
+    Popup,
   },
-  computed: mapGetters(["IS_SHOW_POPUP"])
-}
+  computed: mapGetters(["IS_SHOW_POPUP"]),
+};
 </script>
