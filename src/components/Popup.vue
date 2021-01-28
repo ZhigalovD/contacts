@@ -18,16 +18,16 @@ export default {
   name: "Popup",
   computed: mapGetters(["GET_ARR", "GET_NAME_EVENT"]),
   methods: {
-    ...mapMutations(["UPDATE_INFORMATION", "DELETE_INFORMATION", "SHOW_POPUP"]),
+    ...mapMutations(["UPDATE_INFO", "DELETE_INFO", "SHOW_POPUP"]),
     confirmation() {
       if (this.GET_NAME_EVENT.name === "edit") {
-        this.UPDATE_INFORMATION({
+        this.UPDATE_INFO({
           id: this.GET_ARR.id,
           nameInformation: this.GET_ARR.nameInformation,
           valueInformation: this.GET_ARR.valueInformation,
         });
       } else {
-        this.DELETE_INFORMATION({
+        this.DELETE_INFO({
           id: this.GET_ARR.id,
         });
       }

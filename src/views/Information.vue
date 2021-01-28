@@ -1,11 +1,48 @@
 <template>
-  <div class="create container">
-    <div class="create__wrapper">
-      <div class="create__title">
-        Добавление информации контакта
-        <div>Пример: "e-mail" "contactapp@mail.ru"</div>
+  <div class="info container">
+    <div class="info__photo">
+      <div class="info__photo-bg">
+        <img src="@/assets/images/s1200.webp" alt="" />
       </div>
-      <form @submit.prevent="submit">
+      <h1>{{ name }}</h1>
+      <div class="info__avatar">
+        <img src="@/assets/images/s1200.webp" alt="" />
+      </div>
+    </div>
+    <div class="info__wrapper">
+      <div class="info__required-fields">
+        <div class="info__required-fields--inp">
+          <input
+            type="text"
+            name="name"
+            v-model="name"
+            @change="changeMainInfo"
+            @focus="isChoosedName = true"
+            @blur="
+              name.length > 0 ? (isChoosedName = true) : (isChoosedName = false)
+            "
+          />
+          <label :class="{ active: isChoosedName }">name</label>
+          <span>{{ errors.errorName }}</span>
+        </div>
+        <div class="info__required-fields--inp">
+          <input
+            type="number"
+            name="phone"
+            v-model="phone"
+            @change="changeMainInfo"
+            @focus="isChoosedPhone = true"
+            @blur="
+              phone.length > 0
+                ? (isChoosedPhone = true)
+                : (isChoosedPhone = false)
+            "
+          />
+          <label :class="{ active: isChoosedPhone }">phone</label>
+          <span>{{ errors.errorPhone }}</span>
+        </div>
+      </div>
+      <div class="info__other">
         <input
           type="text"
           placeholder="Введите название"
@@ -16,41 +53,19 @@
           placeholder="Введите значение"
           v-model="valueInformation"
         />
-        <button class="create__wrapper--button" type="submit">+</button>
-      </form>
-      <div class="create__required-fields">
-        <div class="create__required-fields--title">Обязательные поля</div>
-        <div class="create__required-fields--inp">
-          <input type="text" placeholder="Имя" disabled />
-          <input
-            type="text"
-            name="name"
-            placeholder="Введите значение"
-            v-model="name"
-            @change="dataChange"
-          />
-        </div>
-        <div class="create__required-fields--inp">
-          <input type="text" placeholder="Номер телефона" disabled />
-          <input
-            type="text"
-            name="phone"
-            placeholder="Введите значение"
-            v-model="phone"
-            @change="dataChange"
-          />
-        </div>
+        <button class="button" @click="setOtherInfo">+</button>
+        <span>{{ errors.errorNameInfo }}</span>
       </div>
     </div>
-    <div class="create__information">
-      <div class="create__information--title">Дополнительные поля</div>
+    <div class="info__item">
+      <div class="info__item--title">Дополнительные поля</div>
       <line-information
-        v-for="(info, i) in ADD_INFORMATION"
+        v-for="(info, i) in GET_OTHER_INFO"
         :key="i"
         :info="info"
       />
     </div>
-    <div class="create__add">
+    <div class="info__add">
       <router-link
         to="/"
         @click.native="saveContact"
@@ -58,6 +73,7 @@
         >Сохранить</router-link
       >
       <router-link to="/" @click.native="cancelPage">Отмена</router-link>
+      <router-link to="/" @click.native="deleteContact">delete</router-link>
     </div>
   </div>
 </template>
@@ -73,122 +89,151 @@ export default {
   },
   data() {
     return {
+      errors: {},
       name: "",
       phone: "",
       idInformation: 0,
       nameInformation: "",
       valueInformation: "",
+      isChoosedName: false,
+      isChoosedPhone: false,
     };
   },
   computed: {
     ...mapGetters([
-      "ADD_INFORMATION",
-      "GET_REQUIRE_FIELDS",
+      "GET_OTHER_INFO",
+      "GET_MAIN_INFO",
+      "GET_ID_CONTACT",
       "GET_CONTACTS",
-      "GET_ID",
     ]),
-    Contacts() {
-      return {
-        ...this.GET_ID,
-        ...this.GET_REQUIRE_FIELDS,
-        ...[this.ADD_INFORMATION],
-      };
-    },
     isButtonSaveDisabled() {
       return !this.name || !this.phone;
     },
   },
   created() {
+    this.GET_STORE_CONTACTS();
     this.fetchData();
   },
   watch: {
     $route: "fetchData",
   },
+  mounted() {
+    this.inputEmpty()
+  },
   methods: {
     ...mapMutations([
-      "SET_INFORMATION",
-      "SET_REQUIRE_FIELDS",
-      "SET_ALL_CONTACTS",
-      "DEFAULT_INFO",
-      "DEFAULT_REQUIRE_FIELDS",
+      "SET_MAIN_INFO",
+      "SET_FULL_CONTACT",
+      "SET_OTHER_INFO",
+      "CLEAR_MAIN_INFO",
+      "CLEAR_OTHER_INFO",
       "SET_INFORMATION_FROM_CONTACTS",
+      "GET_STORE_CONTACTS",
+      "DELETE_CONTACT",
     ]),
-    submit() {
-      this.SET_INFORMATION({
-        id: this.idInformation++,
-        nameInformation: this.nameInformation,
-        valueInformation: this.valueInformation,
-      });
-      this.nameInformation = this.valueInformation = "";
+    inputEmpty() {
+      if (this.name.length > 0) {
+        this.isChoosedName = true
+      }
+      if (this.phone.length > 0) {
+        this.isChoosedPhone = true
+      }
     },
-    cancelPage() {
-      this.DEFAULT_INFO([]);
-      this.DEFAULT_REQUIRE_FIELDS({});
+    setOtherInfo() {
+      if (
+        this.nameInformation.length >= 2 &&
+        this.valueInformation.length >= 2
+      ) {
+        this.errors = {};
+        this.SET_OTHER_INFO({
+          id: this.idInformation++,
+          nameInformation: this.nameInformation,
+          valueInformation: this.valueInformation,
+        });
+        this.nameInformation = this.valueInformation = "";
+      } else if (this.name.length < 3) {
+        this.errors = { ...this.errors, errorNameInfo: "Поля не заполнены" };
+      }
     },
-    dataChange() {
-      this.SET_REQUIRE_FIELDS({
-        name: this.name,
-        phone: this.phone,
-      });
+    changeMainInfo() {
+      if (this.name.length >= 3 && this.phone.length >= 5) {
+        this.errors = {};
+        this.SET_MAIN_INFO({
+          name: this.name,
+          phone: this.phone,
+        });
+      } else if (this.name.length < 3) {
+        this.errors = { ...this.errors, errorName: "Укажите имя" };
+      } else if (this.phone.length < 5) {
+        this.errors = {};
+        this.errors = { ...this.errors, errorPhone: "Укажите телефон" };
+      }
     },
     saveContact() {
-      this.SET_ALL_CONTACTS(this.Contacts);
-      this.DEFAULT_INFO([]);
-      this.DEFAULT_REQUIRE_FIELDS({});
+      this.SET_FULL_CONTACT({
+        id_contact: this.GET_ID_CONTACT,
+        main: this.GET_MAIN_INFO,
+        other: this.GET_OTHER_INFO,
+      });
+      this.CLEAR_OTHER_INFO([]);
+      this.CLEAR_MAIN_INFO({});
+    },
+    cancelPage() {
+      this.CLEAR_OTHER_INFO([]);
+      this.CLEAR_MAIN_INFO({});
     },
     fetchData() {
       this.GET_CONTACTS.forEach((el) => {
-        if (el.id_user === this.$route.query.contact_id) {
-          this.SET_INFORMATION_FROM_CONTACTS(el[0]);
-          this.name = el.name;
-          this.phone = el.phone;
-          this.SET_REQUIRE_FIELDS({
-            id_user: el.id_user,
-            name: el.name,
-            phone: el.phone,
+        if (el.id_contact === this.$route.query.contact_id) {
+          this.SET_INFORMATION_FROM_CONTACTS(el.other);
+          this.name = el.main.name;
+          this.phone = el.main.phone;
+          this.SET_MAIN_INFO({
+            name: el.main.name,
+            phone: el.main.phone,
           });
         }
       });
+    },
+    deleteContact() {
+      this.DELETE_CONTACT({ id_contact: this.GET_ID_CONTACT });
     },
   },
 };
 </script>
 
 <style lang="less">
-.create {
+.info {
   padding: 50px 0;
+  background: @bg-info-color;
+
+  &.container {
+    padding-left: 0;
+    padding-right: 0;
+  }
 
   &__wrapper {
-    color: #2c3e50;
+    padding: 5px 15px;
+    background: @light-color;
+    text-align: left;
 
     &--button {
       font-size: @size-main;
       width: 31px;
       height: 31px;
       text-decoration: none;
-      background: #2c3e50;
-      color: #ffffff;
-      padding: 4px 10px;
+      background: @main-color;
+      color: @light-color;
       cursor: pointer;
       border: none;
       outline: none;
       vertical-align: middle;
       border-radius: 3px;
-    }
+      transition: ease all 0.3s;
+      opacity: 0.5;
 
-    input {
-      max-width: 200px;
-      width: 100%;
-      padding: 0 20px;
-      margin-right: 10px;
-      height: 31px;
-      vertical-align: middle;
-      border-radius: 3px;
-      border: 1px solid #2c3e50;
-
-      &:disabled {
-        background: none;
-        border: 1px solid rgba(44, 62, 80, 0.1);
+      &:hover {
+        opacity: 1;
       }
     }
   }
@@ -196,62 +241,51 @@ export default {
   &__required-fields {
     margin: 15px 0;
 
-    &--title {
-      margin: 10px 0;
-    }
-
-    &--button {
-      width: 31px;
-      height: 31px;
-      text-decoration: none;
+    label {
+      position: absolute;
+      left: 3px;
+      top: 0;
       font-size: @size-main;
-      background: #2c3e50;
-      color: #ffffff;
-      padding: 4px 10px;
-      cursor: pointer;
-      border: none;
-      outline: none;
-      vertical-align: middle;
-      border-radius: 3px;
+      transition: ease all 0.3s;
 
-      &:disabled {
-        opacity: 0.5;
-      }
-
-      svg {
-        width: 12px;
-        fill: #ffffff;
+      &.active {
+        top: initial;
+        bottom: 3px;
+        font-size: @size-light;
       }
     }
 
     &--inp {
-      margin-bottom: 10px;
+      margin-bottom: 15px;
+      position: relative;
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+      }
+
+      span {
+        display: block;
+        font-size: 12px;
+        color: red;
+        margin-top: 0;
+        position: absolute;
+      }
     }
   }
 
-  &__information {
+  &__item {
     margin: 20px 0;
-    color: #2c3e50;
 
     &--title {
       margin: 10px 0;
-    }
-  }
-
-  &__title {
-    font-size: @size-big;
-    margin-bottom: 10px;
-
-    div {
-      font-size: @size-light;
     }
   }
 
   &__add {
     a {
       text-decoration: none;
-      background: #2c3e50;
-      color: #ffffff;
+      background: @main-color;
+      color: @light-color;
       padding: 10px 15px;
       cursor: pointer;
       border: none;
@@ -259,11 +293,69 @@ export default {
       vertical-align: middle;
       border-radius: 3px;
       margin: 0 5px;
+      transition: ease all 0.3s;
+      opacity: 0.5;
+
+      &:hover {
+        opacity: 1;
+      }
 
       &.disabled {
         pointer-events: none;
-        opacity: 0.5;
+        opacity: 0.3;
       }
+    }
+  }
+  &__other {
+    position: relative;
+    margin-bottom: 20px;
+    span {
+      display: block;
+      font-size: 12px;
+      color: red;
+      margin-top: 5px;
+      position: absolute;
+    }
+  }
+
+  &__photo {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 15px;
+
+    h1 {
+      position: absolute;
+      left: 118px;
+      bottom: 23%;
+      color: @light-color;
+      font-weight: @font-weight-regular;
+      font-size: @size-big;
+    }
+
+    &-bg {
+      width: 100%;
+      filter: blur(7px);
+
+      img {
+        object-fit: cover;
+        height: 100px;
+        object-position: center 50%;
+      }
+    }
+  }
+
+  &__avatar {
+    width: 80px;
+    height: 80px;
+    overflow: hidden;
+    border-radius: 50%;
+    margin-left: 28px;
+    margin-top: -64px;
+    position: relative;
+    img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
     }
   }
 }

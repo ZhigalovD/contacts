@@ -15,7 +15,7 @@
     <button
       @click="unDisabled"
       v-if="isDisabled"
-      class="line-information__edit"
+      class="line-information__edit button"
     >
       <svg
         version="1.1"
@@ -42,7 +42,7 @@
         </g>
       </svg>
     </button>
-    <button @click="returnInformation" :disabled="isDisabledBack">
+    <button @click="returnInformation" :disabled="isDisabledBack" class="button">
       <svg
         version="1.1"
         id="Capa_1"
@@ -66,9 +66,9 @@
       </svg>
     </button>
     <div class="line-information__buttons">
-      <button @click="confirmationInformation" v-if="!isDisabled">✓</button>
-      <button @click="cancelInformation" v-if="!isDisabled">✖</button>
-      <button @click="deleteInformation" v-if="!isDisabled" class="crash">
+      <button @click="confirmationInformation" v-if="!isDisabled" class="button">✓</button>
+      <button @click="cancelInformation" v-if="!isDisabled" class="button">✖</button>
+      <button @click="deleteInformation" v-if="!isDisabled" class="button crash">
         <svg
           version="1.1"
           id="Capa_1"
@@ -165,55 +165,9 @@ export default {
 .line-information {
   margin: 15px 0;
 
-  input {
-    display: inline-block;
-    max-width: 200px;
-    width: 100%;
-    padding: 0 20px;
-    margin-right: 10px;
-    height: 31px;
-    vertical-align: middle;
-    border-radius: 3px;
-    border: 1px solid #2c3e50;
-
-    &:disabled {
-      background: none;
-      border: 1px solid rgba(44, 62, 80, 0.1);
-    }
-  }
-
   &__buttons {
     margin-top: 10px;
   }
 
-  button {
-    width: 31px;
-    height: 31px;
-    text-align: center;
-    cursor: pointer;
-    background: #2c3e50;
-    color: #ffffff;
-    border: none;
-    outline: none;
-    border-radius: 3px;
-    margin-right: 10px;
-    vertical-align: middle;
-
-    svg {
-      width: 12px;
-      fill: #ffffff;
-    }
-  }
-
-  .crash {
-    vertical-align: middle;
-    margin: 0;
-    padding: 0;
-    line-height: 38px;
-    svg {
-      width: 20px;
-      fill: #ffffff;
-    }
-  }
 }
 </style>

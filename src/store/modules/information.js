@@ -1,84 +1,101 @@
 export default {
-    state: {
-        information: [],
-        requiredFields: {},
-        contacts: [],
-        otherInfo: [],
-        id_user: {}
+  state: {
+    id_contact: "",
+    contacts: [],
+    otherInfo: [],
+    mainInfo: {},
+  },
+  getters: {
+    GET_CONTACTS(state) {
+      return state.contacts;
     },
-    getters: {
-        ADD_INFORMATION(state) {
-            return state.information
-        },
-        GET_REQUIRE_FIELDS(state) {
-            return state.requiredFields
-        },
-        GET_CONTACTS(state) {
-            return state.contacts
-        },
-        GET_ID(state) {
-            return state.id_user
+    GET_ID_CONTACT(state) {
+      return state.id_contact;
+    },
+    GET_OTHER_INFO(state) {
+      return state.otherInfo;
+    },
+    GET_MAIN_INFO(state) {
+      return state.mainInfo;
+    },
+  },
+  mutations: {
+    SET_CONTACT_ID(state, payload) {
+      state.id_contact = payload;
+    },
+    GET_STORE_CONTACTS(state) {
+      if (localStorage.getItem("contacts")) {
+        state.contacts = [];
+        let data = JSON.parse(localStorage.getItem("contacts"));
+        data.forEach((el) => {
+          state.contacts.push(el);
+        });
+      }
+    },
+    SET_OTHER_INFO(state, payload) {
+      if (payload.nameInformation && payload.valueInformation) {
+        state.otherInfo.push(payload);
+      }
+    },
+    SET_MAIN_INFO(state, payload) {
+      state.mainInfo = payload;
+    },
+    SET_FULL_CONTACT(state, payload) {
+      if (state.contacts.length === 0) {
+        state.contacts.push(payload);
+      } else {
+        let i = state.contacts.findIndex(
+          (o) => o.id_contact === payload.id_contact
+        );
+
+        if (state.contacts[i]) {
+          state.contacts.splice(i, 1, payload);
+        } else {
+          state.contacts.push(payload);
         }
+      }
+      localStorage.setItem("contacts", JSON.stringify(state.contacts));
     },
-    mutations: {
-        SET_INFORMATION(state, info) {
-            if (info.nameInformation && info.valueInformation) {
-                state.information.push(info)
-            }
-        },
-        SET_INFORMATION_FROM_CONTACTS(state, payout) {
-            state.information = payout
-        },
-        UPDATE_INFORMATION(state, info) {
-            let index = state.information.filter(item => item.id === info.id)
-            state.information.forEach((el, i) => {
-                if (el.id === index[0].id) {
-                    state.information.splice(i, 1, info) //подумать может лучше reduce
-                }
-            })
-        },
-        DELETE_INFORMATION(state, info) {
-            let index = state.information.filter(item => item.id === info.id)
-            state.information.forEach((el, i) => {
-                if (el.id === index[0].id) {
-                    state.information.splice(i, 1) //подумать может лучше reduce
-                }
-            })
-        },
-        DELETE_CONTACT(state, payout) {
-            let i = state.contacts.findIndex(o => o.id_user === payout.id_user);
-            if (state.contacts[i]) {
-                state.contacts.splice(i, 1)
-            }
-        },
-        SET_ID(state, value) {
-            state.id_user = value
-        },
-        SET_REQUIRE_FIELDS(state, value) {
-            state.requiredFields = value
-        },
-
-        /* нужен полный рефакторинг */
-
-        SET_ALL_CONTACTS(state, value) {
-            if (state.contacts.length === 0) {
-                state.contacts.push(value)
-            } else {
-                let i = state.contacts.findIndex(o => o.id_user === value.id_user);
-
-                if (state.contacts[i]) {
-                    state.contacts.splice(i, 1, value)
-                } else {
-                    state.contacts.push(value)
-                }
-            }
-        },
-        DEFAULT_INFO(state, value) {
-            state.information = value
-        },
-        DEFAULT_REQUIRE_FIELDS(state, value) {
-            state.requiredFields = value
+    DELETE_CONTACT(state, payload) {
+      let i = state.contacts.findIndex(
+        (o) => o.id_contact === payload.id_contact
+      );
+      if (state.contacts[i]) {
+        state.contacts.splice(i, 1);
+      }
+      let data = JSON.parse(localStorage.getItem("contacts"));
+      data.forEach((el, index) => {
+        if (el.id_contact === payload.id_contact) {
+          data.splice(index, 1);
+          localStorage.setItem("contacts", JSON.stringify(data));
         }
+      });
     },
-    actions: {},
-}
+    SET_INFORMATION_FROM_CONTACTS(state, payload) {
+      state.otherInfo = payload;
+    },
+    UPDATE_INFO(state, payload) {
+      let index = state.otherInfo.filter((item) => item.id === payload.id);
+      state.otherInfo.forEach((el, i) => {
+        if (el.id === index[0].id) {
+          state.otherInfo.splice(i, 1, payload);
+        }
+      });
+    },
+    DELETE_INFO(state, payload) {
+      let index = state.otherInfo.filter((item) => item.id === payload.id);
+      state.otherInfo.forEach((el, i) => {
+        if (el.id === index[0].id) {
+          state.otherInfo.splice(i, 1);
+        }
+      });
+    },
+    CLEAR_MAIN_INFO(state, payload) {
+      state.mainInfo = payload;
+    },
+    CLEAR_OTHER_INFO(state, payload) {
+      state.otherInfo = payload;
+    },
+  },
+  actions: {},
+};
